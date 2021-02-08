@@ -66,23 +66,27 @@ void loop() {
       if (client.available()) {
         String c = client.readString();
         Serial.println(c);
+        // String that tells Arduino to turn off the lights 
         if (c == "reset_lights") {
-          first_problem_displayed = false;
+          first_problem_displayed = false; // reset the variable for checking if the problem is shown on the wall
+          // turn off LEDs with the next two commands
           FastLED.clear();
           FastLED.show();
         }
         else{
-          
+          // check if there is already a problem displayed and if the used wants to show the second one
           if(first_problem_displayed && getValue(c, ';', 2) == "second"){
-            
+          // call the function for turning on the correct light
           String build_status = buildArray(getValue(c, ';', 0), getValue(c, ';', 1), getValue(c, ';', 2));
           Serial.println(build_status);
             
           }
-          
+
+          // show the next problem by erasing the previous one and showing the next one
           else{
             
-          FastLED.clear();
+          FastLED.clear(); // turn all lights off
+          // call the function for turning on the correct lights
           String build_status = buildArray(getValue(c, ';', 0), getValue(c, ';', 1), getValue(c, ';', 2));
           Serial.println(build_status);
           first_problem_displayed = true;
@@ -155,13 +159,15 @@ String getValue(String data, char separator, int index)
 }
 
 String buildArray(String ids, String colors, String sequence_identifier){
+  // sequence_identifier tells us which sequence has been sent (first / second)
   Serial.println("The sent sequence is: " + sequence_identifier);
   Serial.println("Ids: " + ids);
   Serial.println("Colors: " + colors);
-  // establish the correct colors for LEDs
+  // establish the correct primary colors for LEDs
   CRGB start = CRGB(0, 255, 0);
   CRGB intermediate = CRGB(0, 0, 255);
   CRGB top = CRGB(255,0, 0);
+  // if there already is a problem on the wall and you want to display the second one, establish secondary colors
   if(sequence_identifier == "second"){
     start = CRGB(255, 255, 0);
     intermediate = CRGB(0, 255, 255);

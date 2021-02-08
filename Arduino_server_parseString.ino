@@ -15,6 +15,7 @@ int keyIndex = 0;                 // your network key Index number (needed only 
 String hold_ids; 
 String hold_tags;
 int status = WL_IDLE_STATUS;
+boolean first_problem_displayed = false;
 
 WiFiServer server(8080);
 
@@ -65,8 +66,31 @@ void loop() {
       if (client.available()) {
         String c = client.readString();
         Serial.println(c);
-        String build_status = buildArray(getValue(c, ';', 0), getValue(c, ';', 1));
-        Serial.println(build_status);
+        if (c == "reset_lights") {
+          first_problem_displayed = false;
+          FastLED.clear();
+          FastLED.show();
+        }
+        else{
+          
+          if(first_problem_displayed && getValue(c, ';', 2) == "second"){
+            
+          String build_status = buildArray(getValue(c, ';', 0), getValue(c, ';', 1), getValue(c, ';', 2));
+          Serial.println(build_status);
+            
+          }
+          
+          else{
+            
+          FastLED.clear();
+          String build_status = buildArray(getValue(c, ';', 0), getValue(c, ';', 1), getValue(c, ';', 2));
+          Serial.println(build_status);
+          first_problem_displayed = true;
+            
+          }
+          
+        }
+
 
         /*
         if (c == "show_all") {
@@ -130,9 +154,20 @@ String getValue(String data, char separator, int index)
     return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
 
-String buildArray(String ids, String colors){
-  Serial.println("Ids: "+ids);
-  Serial.println("Colors: "+colors);
+String buildArray(String ids, String colors, String sequence_identifier){
+  Serial.println("The sent sequence is: " + sequence_identifier);
+  Serial.println("Ids: " + ids);
+  Serial.println("Colors: " + colors);
+  // establish the correct colors for LEDs
+  CRGB start = CRGB(0, 255, 0);
+  CRGB intermediate = CRGB(0, 0, 255);
+  CRGB top = CRGB(255,0, 0);
+  if(sequence_identifier == "second"){
+    start = CRGB(255, 255, 0);
+    intermediate = CRGB(0, 255, 255);
+    top = CRGB(255,0, 255);
+  }
+
   // initalize id array
   char temp_ids[ids.length() + 1];
   ids.toCharArray(temp_ids, ids.length()+1);
@@ -167,21 +202,21 @@ String buildArray(String ids, String colors){
   }
 
   
-  // for loop that traverses over led_ids and lights the correct LED with the correct color
+  // FOR loop, which traverses over led_ids and lights the correct LED with the correct color
     for(int n = 0; n < index1; n++)
    {
 
     if (atoi(led_ids[n]) < 50){ // TODO: implement a system for all the lights, not just 50!!!!
       if (strcmp(led_colors[n], "green") == 0){ // comparison of char to string
-        leds[atoi(led_ids[n])] = CRGB(0, 255, 0); // lighting the correct LED
+        leds[atoi(led_ids[n])] = start; // lighting the correct LED
         FastLED.show();
       }
       else if (strcmp(led_colors[n], "blue") == 0){ // comparison of char to string
-        leds[atoi(led_ids[n])] = CRGB(0, 0, 255); // lighting the correct LED
+        leds[atoi(led_ids[n])] = intermediate; // lighting the correct LED
         FastLED.show();;
       }
       else if (strcmp(led_colors[n], "red") == 0){ // comparison of char to string
-        leds[atoi(led_ids[n])] = CRGB(255, 0, 0); // lighting the correct LED
+        leds[atoi(led_ids[n])] = top; // lighting the correct LED
         FastLED.show();
       }
 

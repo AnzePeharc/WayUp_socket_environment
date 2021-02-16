@@ -214,16 +214,45 @@ String buildArray(String ids, String colors, String sequence_identifier){
 
     if (atoi(led_ids[n]) < 50){ // TODO: implement a system for all the lights, not just 50!!!!
       if (strcmp(led_colors[n], "green") == 0){ // comparison of char to string
-        leds[atoi(led_ids[n])] = start; // lighting the correct LED
-        FastLED.show();
+        /* check if LED is already lit up, 
+         *  if you are displaying two problems at once
+         */
+        if(leds[atoi(led_ids[n])] && sequence_identifier == "second"){
+          leds[atoi(led_ids[n])] = CRGB(255, 255, 255); // lighting the correct LED
+          FastLED.show();
+        }
+        else{
+          leds[atoi(led_ids[n])] = start; // lighting the correct LED
+          FastLED.show();
+        }
       }
       else if (strcmp(led_colors[n], "blue") == 0){ // comparison of char to string
-        leds[atoi(led_ids[n])] = intermediate; // lighting the correct LED
-        FastLED.show();;
+        /* check if LED is already lit up, 
+         *  if you are displaying two problems at once
+         */
+        if(leds[atoi(led_ids[n])] && sequence_identifier == "second"){
+          leds[atoi(led_ids[n])] = CRGB(255, 255, 255); // lighting the correct LED
+          FastLED.show();
+        }
+        else{
+          leds[atoi(led_ids[n])] = intermediate; // lighting the correct LED
+          FastLED.show();
+        }
+
       }
       else if (strcmp(led_colors[n], "red") == 0){ // comparison of char to string
-        leds[atoi(led_ids[n])] = top; // lighting the correct LED
-        FastLED.show();
+        /* check if LED is already lit up, 
+         *  if you are displaying two problems at once
+         */
+        if(leds[atoi(led_ids[n])] && sequence_identifier == "second"){
+          leds[atoi(led_ids[n])] = CRGB(255, 255, 255); // lighting the correct LED
+          FastLED.show();
+        }
+        else{
+          leds[atoi(led_ids[n])] = top; // lighting the correct LED
+          FastLED.show();          
+        }
+
       }
 
       }

@@ -10,7 +10,7 @@ CRGB leds[NUM_LEDS];
 // change ssid and pass according to your WiFi network
 char ssid[] = "PeharcUniverse";      // your network SSID (name)
 char pass[] = "druzinapeharc";   // your network password
-IPAddress ip(192, 168, 0, 110);  // static ip address
+IPAddress ip(192, 168, 0, 150);  // static ip address
 int keyIndex = 0;                 // your network key Index number (needed only for WEP)
 String hold_ids; 
 String hold_tags;
